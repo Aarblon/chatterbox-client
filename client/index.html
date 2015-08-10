@@ -16,15 +16,27 @@
     <div id="main">
       <h1>chatterbox</h1>
       <!-- Your HTML goes here! -->
-      <div id="roomSelect">
-      </div>
-      <div id="chats">
-      </div>
       <div id="send">
         <form class="submit" action="" method="post">
           <textarea id="message" name="message"></textarea>
           <input type="submit" value="Submit" />
         </form>
+      </div>
+      <div class="showRoom">
+        <form action="" method="post">
+          <input type="submit" value="Select a Room" />
+          <select id="roomSelect" name="room">
+          </select>
+        </form>
+      </div>
+      <div class="addRoom">
+        <form action="" method="post">
+          <label for="newRoom">Room name</label>
+          <input id="newRoom" type="text" name="newRoom"/>
+          <input type="submit" value="Create a Room" />
+        </form>
+      </div>
+      <div id="chats">
       </div>
     </div>
   </body>
