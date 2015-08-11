@@ -2,29 +2,21 @@
 
 var app = {
   currentRoom: "Lobby",
-  chatRooms: { "Lobby": 1 },
-  friendsList: {},
-  init: function(){
 
-    app.makeCurrentRoomSelected()
+  chatRooms: { "Lobby": 1 },
+
+  friendsList: {},
+
+  init: function(){
+    app.setEventHandlers();
+
+    app.makeCurrentRoomSelected();
 
     app.fetch();
 
     setInterval(function() {
       app.fetch()
       }, 1000);
-
-    $(document).ready(function(){
-      $('body').on('click', '.username', app.addFriend);
-      $('#send .submit').on('submit', app.handleSubmit);
-      $('#roomSelect').on('change', function(event){
-        app.currentRoom = $(this).val();
-      });
-      $('.addRoom form').on('submit', function(event) {
-        event.preventDefault();
-        app.addRoom($(this).find("#newRoom").val());
-      });
-    });
 
   },
   send: function(message){
@@ -118,9 +110,27 @@ var app = {
     var username = window.location.search.split('=')[1];
     app.send({"username": username, "text": message, "roomname": app.currentRoom});
   },
+
   makeCurrentRoomSelected: function(){
    $('[selected="selected"]').removeAttr('selected');
    $('option[value="' + app.currentRoom + '"]').attr('selected', 'selected');
+  },
+
+  setEventHandlers: function() {
+    $(document).ready(function(){
+      $('body').on('click', '.username', app.addFriend);
+
+      $('#send .submit').on('submit', app.handleSubmit);
+
+      $('#roomSelect').on('change', function(event){
+        app.currentRoom = $(this).val();
+      });
+
+      $('.addRoom form').on('submit', function(event) {
+        event.preventDefault();
+        app.addRoom($(this).find("#newRoom").val());
+      })
+    })
   }
 };
 
