@@ -3,11 +3,11 @@
 var app = {
   currentRoom: "Lobby",
   chatRooms: { "Lobby": 1 },
+  friendsList: {},
   init: function(){
-    //Setting up click handler to trigger addFriend when username clicked
-    app.currentRoom = String(window.location.search).split('room=')[1] || "Lobby";
-    $("select").val([]);
-    $('[value="' + app.currentRoom + '"]').attr('selected', 'selected');
+    //$("select").val([]);  de-selects default "selected" in #roomSelect
+    $('[selected="selected"]').removeAttr('selected');
+    $('option[value="' + app.currentRoom + '"]').attr('selected', 'selected'); //Broken: should set "selected" for option corresponding to current room
 
     app.fetch();
 
@@ -16,15 +16,10 @@ var app = {
       }, 1000);
 
     $(document).ready(function(){
-      $('body').on('click', '.username', function(){
-        app.addFriend();
-      });
-      $('#send .submit').on('submit',
-        app.handleSubmit
-      );
+      $('body').on('click', '.username', app.addFriend);
+      $('#send .submit').on('submit', app.handleSubmit);
       $('#roomSelect').on('change', function(event){
-        var currentLocation = String(window.location).split('&')[0];
-        window.location = currentLocation + "&room=" + $(this).val();
+        app.currentRoom = $(this).val();
       });
       $('.addRoom form').on('submit', function(event) {
         event.preventDefault();
@@ -84,23 +79,45 @@ var app = {
     var userSpan = $('<span class="username"></span>').text(message.username + ": ");
     var messageSpan = $('<span class="messageText"></span>').text(message.text);
 
+
+    if(app.friendsList[message.username] === 1) {
+      newDiv.addClass('friend');
+    }
+
     $('#chats').append( newDiv.append(userSpan).append(messageSpan) );
 
   },
   addRoom: function(roomName){
-    if(app.chatRooms[roomName] === undefined) {
-      $('#roomSelect').append('<option id="' + roomName + '">' + roomName + '</option>');
-      app.chatRooms[roomName] = 1;
+    var newRoom  = $('<option></option>');
+    newRoom.text(roomName);
+    newRoom.attr('value', newRoom.text());
+
+    if(app.chatRooms[newRoom.text()] === undefined) {
+      $('#roomSelect').append(newRoom);
+      app.chatRooms[newRoom.text()] = 1;
     }
   },
   addFriend: function(){
+    var newFriend = $(this).text().split(':')[0];
+    //toggle bold on new friend's chat
+    $('.username').each(function(index, user){
+      if($(user).text().split(':')[0] == newFriend){
+        $(user).parent().toggleClass('friend');
+        if(app.friendsList[newFriend] === 1){
+          app.friendsList[newFriend] = undefined;
+        } else {
+          app.friendsList[newFriend] = 1;
+        }
+      }
+    });
+      //if element username == newFriend then find the message and bold it
 
   },
   handleSubmit: function(event){
     event.preventDefault();
     var message = $(this).find("#message").val();
     var username = window.location.search.split('=')[1];
-    app.send({"username": username, "text": message, "roomname": "lobby"});
+    app.send({"username": username, "text": message, "roomname": app.currentRoom});
   }
 };
 
