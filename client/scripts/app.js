@@ -5,9 +5,8 @@ var app = {
   chatRooms: { "Lobby": 1 },
   friendsList: {},
   init: function(){
-    //$("select").val([]);  de-selects default "selected" in #roomSelect
-    $('[selected="selected"]').removeAttr('selected');
-    $('option[value="' + app.currentRoom + '"]').attr('selected', 'selected'); //Broken: should set "selected" for option corresponding to current room
+
+    app.makeCurrentRoomSelected()
 
     app.fetch();
 
@@ -118,6 +117,10 @@ var app = {
     var message = $(this).find("#message").val();
     var username = window.location.search.split('=')[1];
     app.send({"username": username, "text": message, "roomname": app.currentRoom});
+  },
+  makeCurrentRoomSelected: function(){
+   $('[selected="selected"]').removeAttr('selected');
+   $('option[value="' + app.currentRoom + '"]').attr('selected', 'selected');
   }
 };
 
