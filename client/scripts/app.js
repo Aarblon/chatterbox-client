@@ -101,8 +101,6 @@ var app = {
         }
       }
     });
-      //if element username == newFriend then find the message and bold it
-
   },
   handleSubmit: function(event){
     event.preventDefault();
@@ -136,17 +134,3 @@ var app = {
 
 
 app.init();
-
-
-
-/*
-TO DO LIST:
-Post current room update, set the correct option as selected.
-
-Fix username when chatting.
-
-When chatting, make roomname = to current room
-
-Add a header representing the current room
-
-*/
