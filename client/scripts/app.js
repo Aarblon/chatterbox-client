@@ -1,10 +1,19 @@
 // YOUR CODE HERE:
 
 var app = {
-  chatRooms: {},
+  currentRoom: "Lobby",
+  chatRooms: { "Lobby": 1 },
   init: function(){
     //Setting up click handler to trigger addFriend when username clicked
+    app.currentRoom = String(window.location.search).split('room=')[1] || "Lobby";
+    $("select").val([]);
+    $('[value="' + app.currentRoom + '"]').attr('selected', 'selected');
+
     app.fetch();
+
+    setInterval(function() {
+      app.fetch()
+      }, 1000);
 
     $(document).ready(function(){
       $('body').on('click', '.username', function(){
@@ -13,6 +22,10 @@ var app = {
       $('#send .submit').on('submit',
         app.handleSubmit
       );
+      $('#roomSelect').on('change', function(event){
+        var currentLocation = String(window.location).split('&')[0];
+        window.location = currentLocation + "&room=" + $(this).val();
+      });
       $('.addRoom form').on('submit', function(event) {
         event.preventDefault();
         app.addRoom($(this).find("#newRoom").val());
@@ -46,11 +59,12 @@ var app = {
       type: 'GET',
       contentType: 'application/json',
       success: function (data) {
-
-        //var currentRooms = app.cacheChatRooms();
-
+        app.clearMessages();
         data.results.forEach(function(chatObject) {
-          app.addMessage(chatObject);
+          if(chatObject.roomname === app.currentRoom) {
+
+            app.addMessage(chatObject);
+          }
           if(app.chatRooms[chatObject.roomname] === undefined){
             app.addRoom(chatObject.roomname);
           }
@@ -93,14 +107,16 @@ var app = {
 
 app.init();
 
-    //check to see if room exists
-    // if($("#chats").find('#'+ message.roomname).length === 0 ) {
-    //   $('#chats').append('<div id='+ message.roomname + '></div>'));
-    // }
-
-    // $('#' + message.roomname).append()
 
 
+/*
+TO DO LIST:
+Post current room update, set the correct option as selected.
 
+Fix username when chatting.
 
+When chatting, make roomname = to current room
 
+Add a header representing the current room
+
+*/
